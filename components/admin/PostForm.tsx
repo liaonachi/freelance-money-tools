@@ -1,7 +1,8 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import type { BlogPost } from '@/lib/types'
+import type { BlogPost, FaqItem } from '@/lib/types'
+import { t } from '@/messages'
 
 interface Props {
   initialValues?: Partial<BlogPost>
@@ -21,7 +22,20 @@ export function PostForm({ initialValues, action }: Props) {
   const [title, setTitle] = useState(initialValues?.title ?? '')
   const [slug, setSlug] = useState(initialValues?.slug ?? '')
   const [slugEdited, setSlugEdited] = useState(!!initialValues?.slug)
+  const [faqItems, setFaqItems] = useState<FaqItem[]>(initialValues?.faq_jsonld ?? [])
   const statusRef = useRef<HTMLInputElement>(null)
+
+  function addFaqItem() {
+    setFaqItems((items) => [...items, { question: '', answer: '' }])
+  }
+
+  function removeFaqItem(index: number) {
+    setFaqItems((items) => items.filter((_, i) => i !== index))
+  }
+
+  function updateFaqItem(index: number, field: keyof FaqItem, value: string) {
+    setFaqItems((items) => items.map((item, i) => (i === index ? { ...item, [field]: value } : item)))
+  }
 
   function handleTitleChange(value: string) {
     setTitle(value)
@@ -83,6 +97,52 @@ export function PostForm({ initialValues, action }: Props) {
           defaultValue={initialValues?.content ?? ''}
           className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary resize-y font-mono text-sm"
           placeholder={'# 文章標題\n\n內文...'}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{t('admin.faqHeading')}</label>
+        <div className="space-y-3">
+          {faqItems.map((item, index) => (
+            <div key={index} className="border border-gray-200 rounded-lg p-3 space-y-2">
+              <input
+                type="text"
+                value={item.question}
+                onChange={(e) => updateFaqItem(index, 'question', e.target.value)}
+                placeholder={t('admin.faqQuestionPlaceholder')}
+                aria-label={t('admin.faqQuestionLabel')}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+              />
+              <textarea
+                rows={2}
+                value={item.answer}
+                onChange={(e) => updateFaqItem(index, 'answer', e.target.value)}
+                placeholder={t('admin.faqAnswerPlaceholder')}
+                aria-label={t('admin.faqAnswerLabel')}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-y"
+              />
+              <button
+                type="button"
+                onClick={() => removeFaqItem(index)}
+                className="text-sm text-red-600 hover:underline"
+              >
+                {t('admin.faqRemoveButton')}
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={addFaqItem}
+          className="mt-2 text-sm text-primary hover:underline"
+        >
+          {t('admin.faqAddButton')}
+        </button>
+        <input
+          type="hidden"
+          name="faq_jsonld"
+          value={faqItems.length > 0 ? JSON.stringify(faqItems) : ''}
+          readOnly
         />
       </div>
 

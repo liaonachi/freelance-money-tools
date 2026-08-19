@@ -6,6 +6,7 @@ import { renderSiteConfig } from './lib/render-site-config.ts'
 import { validateSiteConfig } from '../lib/validate-site-config.ts'
 import { renderHandover } from './lib/render-handover.ts'
 import { extractChecklistSection } from './lib/checklist.ts'
+import { shouldSkipPrompt } from './lib/should-skip-prompt.ts'
 import type { NewSiteLocale } from './lib/render-site-config.ts'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -31,7 +32,7 @@ function parseArgs(argv: string[]): { flags: Set<string>; options: Record<string
 
 async function main() {
   const { flags, options } = parseArgs(process.argv.slice(2))
-  const yes = flags.has('yes')
+  const yes = shouldSkipPrompt(flags, options, Boolean(process.stdin.isTTY))
 
   const rl = createInterface({ input: process.stdin, output: process.stdout })
   async function resolveAnswer(key: string, question: string, fallback: string): Promise<string> {

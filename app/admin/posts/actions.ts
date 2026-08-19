@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createSupabaseServiceClient } from '@/lib/supabase-server'
 import { ADMIN_COOKIE, validateSession } from '@/lib/admin-auth'
+import { parseFaqField } from '@/lib/faq'
 
 async function requireAdmin() {
   const cookieStore = await cookies()
@@ -28,7 +29,7 @@ export async function createPost(formData: FormData) {
     cover_image: null,
     status,
     published_at: status === 'published' ? new Date().toISOString() : null,
-    faq_jsonld: null,
+    faq_jsonld: parseFaqField(formData.get('faq_jsonld') as string | null),
   })
 
   revalidatePath('/blog')
@@ -64,6 +65,7 @@ export async function updatePost(id: number, formData: FormData) {
       content: formData.get('content') as string,
       status,
       published_at,
+      faq_jsonld: parseFaqField(formData.get('faq_jsonld') as string | null),
     })
     .eq('id', id)
 

@@ -11,7 +11,8 @@
 
 ## Day 1–2 — Spec（目標 1.5h）
 
-- [ ] fork 母版 → 客戶 private repo
+- [ ] fork 母版 → 客戶 private repo：clone／加 remote 一律用 https（`git@github.com` 的 SSH 若本機沒設 key 會 host key verification failed；`gh auth status` 走 https 時用 https URL 才會跟 CLI 一致）
+- [ ] 加完 `upstream` remote（指回母版）後，馬上跑 `gh repo set-default <客戶repo>`——repo 目錄下同時有 `origin`（客戶）跟 `upstream`（母版）兩個 remote 時，`gh` 系列指令（`gh run list`、`gh repo view`…）預設會抓到母版而不是客戶 repo，沒先 set-default 會查錯 CI 狀態
 - [ ] `npm run new:site`（用 intake 表答案）→ 提交
 - [ ] 每個工具寫 `specs/tool-<slug>.md`：輸入欄位表、公式（附來源）、輸出、CTA 目標、FAQ 3 條 → **客戶書面確認公式**（這是最容易返工的地方，沒確認不動工）
 - [ ] 建客戶自己的 Supabase 專案（或請客戶建並邀你）、Vercel 專案連 repo；`.env.local` 與 Vercel env 填齊（對照 handover §2 表）

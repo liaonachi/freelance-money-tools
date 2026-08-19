@@ -35,6 +35,13 @@ const messages = {
   'admin.passwordPlaceholder': '輸入管理員密碼',
   'admin.loginButton': '登入',
   'admin.seoPlaceholder': 'GSC 儀表板尚未接入，將於 MVP 5 補上 lib/gsc.ts 與抓取腳本後啟用。',
+  'admin.faqHeading': 'FAQ（選填）',
+  'admin.faqQuestionLabel': '問題',
+  'admin.faqAnswerLabel': '答案',
+  'admin.faqQuestionPlaceholder': '輸入問題',
+  'admin.faqAnswerPlaceholder': '輸入答案',
+  'admin.faqAddButton': '＋ 新增一題',
+  'admin.faqRemoveButton': '刪除',
 
   'about.metaTitle': '關於我們',
   'about.heading': '關於 {siteName}',

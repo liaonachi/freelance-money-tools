@@ -39,6 +39,13 @@ const messages: Record<keyof typeof zhTW, string> = {
   'admin.passwordPlaceholder': 'Enter admin password',
   'admin.loginButton': 'Log in',
   'admin.seoPlaceholder': 'The GSC dashboard is not wired up yet — coming in MVP 5.',
+  'admin.faqHeading': 'FAQ (optional)',
+  'admin.faqQuestionLabel': 'Question',
+  'admin.faqAnswerLabel': 'Answer',
+  'admin.faqQuestionPlaceholder': 'Enter a question',
+  'admin.faqAnswerPlaceholder': 'Enter an answer',
+  'admin.faqAddButton': '+ Add a question',
+  'admin.faqRemoveButton': 'Remove',
 
   'about.metaTitle': 'About Us',
   'about.heading': 'About {siteName}',

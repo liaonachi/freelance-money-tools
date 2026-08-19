@@ -144,6 +144,8 @@ git fetch upstream → 看 upstream 的 commit log 決定要不要 cherry-pick
 7. **jsdom 30+ 對 Node 版本要求很窄**（實際裝到的版本要求 `^22.22.2 || ^24.15.0 || >=26.0.0`）：本機 Node 24 測試會過，但 `.github/workflows/test.yml` 若 `node-version` 釘在 20，CI 會在 `test:coverage` 步驟炸掉，錯誤訊息完全看不出跟 Node 版本有關。push 完要去 `gh run watch` 實際看過綠燈，不能只憑本機測試通過就假設 CI 會過。
 8. **`scripts/new-site.ts`／`scripts/new-tool.ts` 是純 `node` 執行（沒裝 tsx/ts-node）**：(a) 相對路徑 import 必須帶明確副檔名 `.ts`，Node 的 ESM loader 不會自動補；(b) `@/` path alias 在純 node 執行下**完全無法解析**，這兩個檔案跟它們 import 的 `scripts/lib/*.ts` 一律只能用相對路徑；(c) 沒有 `"type": "module"` 也能跑，會印一次性能警告，這是預期行為、不用消除。
 9. **本機沒設 SSH key 給 GitHub**：`git@github.com` host key verification failed；clone／remote 一律用 https（跟 `gh auth status` 走的協定一致）。
+10. **同一個 repo 目錄下同時有 `origin`（這個 repo）跟 `upstream`（母版）兩個 remote 時，`gh` 系列指令會抓錯 repo**：`gh run list`／`gh repo view` 預設可能解析成 `upstream` 那個母版 repo。加完 `upstream` remote 後立刻跑 `gh repo set-default liaonachi/freelance-money-tools` 釘死，之後 `gh` 指令才會查對地方（母版側這個坑記在它自己的 CLAUDE.md，這裡只記本站遇到的結果）。
+11. **`scripts/new-site.ts` 非互動環境（stdin 不是 TTY）或帶了任何 flag 時會自動跳過 `rl.question`**：邏輯在 `scripts/lib/should-skip-prompt.ts`（母版 cherry-pick 進來的），不需要 `--yes` 也不會卡住；沒給的欄位一律用預設值。
 
 ## 慣例
 

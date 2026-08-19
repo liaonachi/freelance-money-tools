@@ -35,7 +35,7 @@ Non-secret site settings (name, domain, language, currency, colour, nav, GA4 ID)
 ## 3. Day-to-day: publishing articles
 
 1. Go to `https://freelance-money-tools.vercel.app/admin/login`, enter `ADMIN_PASSWORD`.
-2. **Posts → New**: title, slug (auto-filled, editable), excerpt (used as meta description), content in Markdown. (The data model supports a `faq_jsonld` field for FAQ rich results, but there's no admin UI field for it yet — ask Nadia if you need FAQ on an article.)
+2. **Posts → New**: title, slug (auto-filled, editable), excerpt (used as meta description), content in Markdown, and an optional FAQ section (add/remove question + answer rows) — filled-in FAQs render as `FAQPage` structured data on the article page.
 3. **Save draft** or **Save & publish**. Published pages regenerate within seconds (no redeploy needed) via the Supabase → `/api/revalidate` webhook; the sitemap updates too.
 4. To unpublish: Posts → toggle to draft. The URL 404s and drops from the sitemap.
 
