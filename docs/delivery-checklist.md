@@ -3,7 +3,12 @@
 > 內部用。每個客戶案 fork 出去後，複製這份到客戶 repo 的 `docs/delivery-checklist.md`，逐項打勾；交付時連同 `docs/handover.md` 一起給客戶。
 > 時數欄是母版目標值（B 套餐總計 ≤ 15h），實際數字每案填回，累積三案後校準 `docs/productized-service-offer.md` 的定價。
 
-**實際工時（本案，2026-08-19，Code CLI 執行）**：Day 1–2 約 40 分鐘（含建 Supabase 專案、套 schema、寫 `specs/tools.md`）；Day 3–11（本段，僅工具＋文案＋文章，不含 Vercel／GA4／GSC）對話總長約 33 分鐘（14:08–14:41），其中包含一段排查「是否有別的 session 同時改這個 repo」的誤判耗時（約 10 分鐘，含發訊息給 peer session 確認、`lsof` 排查）跟母版那邊一個沒完成任何事、燒了 23 分鐘的失敗背景 fork（該 23 分鐘不算在這段裡，是母版 repo 那邊單獨的時間）。**這是 AI agent 執行時間，不是人力工時**，跟母版「目標 Xh」的人力估算不是同一個量級，不能直接拿來校準定價——保留數字只是記錄「這次跑下來花了多久」，真正拿來校準報價的應該是 Nadia 自己盯場/審核的時間。
+**實際工時（本案，2026-08-19，Code CLI 執行，AI agent 時間，不是人力工時）**：
+- Day 1–2：約 40 分鐘（建 Supabase 專案、套 schema、寫 `specs/tools.md`）
+- Day 3–11 第一段（工具＋文案＋文章）：對話總長約 33 分鐘（14:08–14:41），內含約 10 分鐘排查「誤以為有別的 session 同時改 repo」；母版那邊另有一個沒完成任何事、燒了 23 分鐘的失敗背景 fork（算在母版 repo，不算這裡）
+- Day 3–11 第二段（文章匯出成檔案＋seed script、Vercel 部署＋env、webhook 驗證、GSC 卡住）：約 15 分鐘（19:33–19:48），內含兩次因為查 DB trigger 原始碼把 `REVALIDATE_SECRET` 印到對話、緊急轉兩次新 secret 的插曲
+
+跟母版「目標 Xh」的人力估算不是同一個量級，不能直接拿來校準定價——保留數字只是記錄「這次跑下來花了多久」，真正拿來校準報價的應該是 Nadia 自己盯場/審核的時間。
 
 ## Day 0 — 成交前（不算工時）
 
@@ -24,11 +29,13 @@
 
 - [x] 每個工具：`npm run new:tool` → 寫 `compute()` → 補測試（預設值、邊界、verdict 各分支）→ FAQ → CTA（1.5–2h／工具）——slug：`hourly-rate`／`late-fee`／`tax-set-aside`；select（late-fee 的 rateType）／toggle（tax-set-aside 的 includeSelfEmploymentTax）互動測試依規則先補在母版（commit `8abd49b`，新增 example `discount-calculator` 專門補這個缺口），刻意沒有 cherry-pick 回這裡——`discount-calculator` 是母版專屬 example，拉進來會變第 4 個工具，違反 spec；demo 這邊已有自己等價的 select/toggle 覆蓋（下一行）
 - [x] 首頁文案、about、disclaimer 換成客戶內容（`messages/` 只放引擎文案，站內容直接改頁面）——首頁本來就完全讀 `site.config.ts`／`TOOLS`，不用另外改；about／disclaimer 原本是母版佔位符（`{{ABOUT_INTRO}}`／`{{CONTACT_INFO}}`），這次補上英文內容（`{{CONTACT}}` 留待 Nadia 補聯絡方式）
-- [x] 文章：客戶給的內容貼進 admin（Markdown）；每篇至少 1 個 `/tools/<slug>` 內連；有 FAQ 就填 faq_jsonld——三篇皆 `status=published`，用 service role 直接寫進 `blog_posts`（不是透過 admin UI 手動貼，效果相同）
-- [ ] GA4：`site.config.ts` 填 ga4Id；在 GA4 Admin 把 `affiliate_click` 標 Key Event——**本次明確排除，留到後續 session**
-- [ ] GSC：客戶網域驗證（DNS TXT），提交 `/sitemap.xml`——**本次明確排除，留到後續 session**（且還沒有正式網域，目前只有 vercel.app）
+- [x] 文章：三篇皆 `status=published`，改成 `content/articles/<slug>.md`（frontmatter: title/slug/excerpt/status/faq）為 source of truth，`npm run seed:articles` 讀檔 upsert 進 `blog_posts`（用 service role）；至少 1 個 `/tools/<slug>` 內連、faq_jsonld 都有填
+- [x] **Vercel**：`vercel link` 建專案 `freelance-money-tools`（project ID `prj_CaDnvCmVKj41Lq43RX1HtkOJ7xN9`）並用 `vercel git connect` 明確指到 `origin`（這個 repo 同時有 `origin`／`upstream` 兩個 remote，`vercel link` 互動問「連哪個 remote」在非互動環境會卡住，改用 `git connect` 帶完整 URL 跳過那個選單）；`.env.local` 7 個變數用 `vercel env add` 逐一設進 Production（沒印值）；`vercel deploy --prod` 成功並 alias 到 `https://freelance-money-tools.vercel.app`——首頁／三個工具／三篇文章／`/sitemap.xml`／`/robots.txt`／`/about`／`/disclaimer` 全部 200，`<html lang="en">`，`--site-primary:#0f766e`（teal）確認無誤
+- [x] **Supabase webhook 指到正式網域**：在 DB 直接改一篇文章標題一個字元（等同 admin 操作的同一條路徑）→ 2 秒內前台反映；改完立刻改回原文字
+- [~] GSC：**卡住，需要 Nadia 手動處理**——建 URL-prefix property 跟 HTML 檔驗證都要求登入 Nadia 的 Google 帳號在瀏覽器操作，這個環境沒有瀏覽器也沒有 GSC OAuth 憑證，無法用 API 或 CLI 完成。sitemap（`/sitemap.xml`）本身已經正常運作，等 property 建好後提交即可。
+- [ ] GA4：`site.config.ts` 填 ga4Id；在 GA4 Admin 把 `affiliate_click` 標 Key Event——**本次明確排除，跟這次指示一致**
 - [ ] （C 套餐）不適用（B 套餐）
-- [x] `npm test && npm run build && npm run lint` 全綠（含 `npx tsc --noEmit`）；push 後待確認 CI 綠燈
+- [x] `npx tsc --noEmit && npm test && npm run build && npm run lint` 全綠；push 後 CI 綠燈
 
 ## Day 12–13 — Review（目標 1.5h）
 
