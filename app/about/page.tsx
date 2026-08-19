@@ -18,10 +18,18 @@ export default function AboutPage() {
 
         <article className="prose">
           <h2>{t('about.whoWeAreHeading')}</h2>
-          <p>{'{{ABOUT_INTRO}}'}</p>
+          <p>
+            {site.name} is a set of free calculators for freelancers — hourly rate, invoice late fees, and
+            tax set-aside — built to answer the questions that come up constantly in freelance communities,
+            without the spreadsheet math. It&apos;s built on the{' '}
+            <a href="https://github.com/liaonachi/seo-tool-site-starter" target="_blank" rel="noopener noreferrer">
+              SEO Tool Site Starter
+            </a>{' '}
+            by Nadia, who builds calculator-driven sites like this one for freelancers and small businesses.
+          </p>
 
           <h2>{t('about.contactHeading')}</h2>
-          <p>{'{{CONTACT_INFO}}'}</p>
+          <p>{'{{CONTACT}}'}</p>
         </article>
       </div>
     </main>

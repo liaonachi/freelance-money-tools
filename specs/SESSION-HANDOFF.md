@@ -24,6 +24,12 @@
 - **Day 1–2 第 4 步完成（2026-08-19）**：`specs/tools.md` 寫定三個工具的公式、來源、faq 草案（hourly-rate／late-fee／tax-set-aside）。Day 3 `npm run new:tool` 直接照抄這份 spec 的 compute 邏輯，faq 草案定稿後填進 config。
 - **Day 1–2 第 3 步（Supabase）完成（2026-08-19）**：重開 Code CLI 後 `mcp__supabase__*` 系列工具可見，帳號確認是 `liaonachi+seodemo@gmail.com's Org`（乾淨帳號，無 auto-publisher-dev/finhub-dev），建了專案 `seo-demo`（region `ap-northeast-1`，project ref `zogebhjbueuwqgebbzxc`，免費方案 $0/月）。`.env.local` 已填齊（URL／anon key／service role key／DB URL／`REVALIDATE_SECRET`／`ADMIN_PASSWORD`／`ADMIN_SESSION_SECRET`，皆亂數產生，未印在任何對話紀錄）。`.mcp.json` 補回 `--project-ref=zogebhjbueuwqgebbzxc`。`supabase/schema.sql`（含 `<VERCEL_DOMAIN>`→`freelance-money-tools.vercel.app`、`<REVALIDATE_SECRET>` 代入實際值）已套用到遠端 DB——**注意：套用時把佔位符換成實際值後直接送進 DB，`supabase/schema.sql` 這個被 commit 的檔案本身維持佔位符原樣**（避免把 REVALIDATE_SECRET 明碼寫進 public repo；下次要重套時用同樣的替換手法，不要直接改這個檔案）。`blog_posts` 表、`blog_posts_updated_at`／`blog_posts_revalidate_trigger` 兩個 trigger 都已確認存在且 enabled。
 - Day 3 之後（Build／Review／Handover）：全部未開始，`.env.local` 已就緒，可以開始寫 `tools/*.config.ts` 跟文章（admin 可接 DB 發文章）。下一步是 Day 3 `npm run new:tool` 依 `specs/tools.md` 產三個工具。
+- **Day 3–11 Build 完成（2026-08-19，本次只做工具＋文案＋文章，Vercel／GA4／GSC 明確排除留待下次）**：
+  - 三個工具 `hourly-rate`／`late-fee`／`tax-set-aside` 用 `npm run new:tool --json` 起手，`compute()` 照 `specs/tools.md` 公式手寫，faq/cta/note 補齊，`__tests__/tools/*.test.ts` 各補了預設值、邊界值（除以零防護）、verdict 三分支的斷言。
+  - **順手清掉母版帶來的 3 個範例工具**（`tip-calculator`／`cash-vs-points`／`points-value`，來自最初 `ba7c778` fork 時母版自帶的示範內容，不是這個站的東西）：連同它們的測試一起刪，`tools/index.ts` 手動清乾淨（`new:tool` 只會插入新項目，不會清舊的）。連帶修掉兩個吃這些範例 slug 的測試（`__tests__/tools-registry.test.ts`、`components/tools/ToolRenderer.test.tsx`），改用新工具當 fixture（select／toggle 互動也在這裡測到了，跟母版那份是分開的兩件事）。
+  - 首頁不用改（本來就完全讀 `site.config.ts`／`TOOLS` 陣列渲染）；about／disclaimer **這次開工前發現已經是填好的英文內容**（`{{CONTACT}}` 留白），git blame 只到 `ba7c778`，但工作樹早就被改過還沒 commit——判斷是前一輪 Cowork 已經寫好檔案、等 Code CLI commit，這次一併收進同一批 commit。**下次开工前務必先 `git status`/`git diff` 看有沒有 Cowork 留下的未 commit 內容，不要預設乾淨**（這次差點漏看，是巧合先讀了檔案才發現內容跟預期的佔位符不一樣）。
+  - 三篇文章（slug：`how-to-set-your-freelance-hourly-rate`／`late-payment-fees-for-freelancers`／`how-much-should-freelancers-set-aside-for-taxes`）直接用 service role + `@supabase/supabase-js` 寫進 `blog_posts`，`status='published'`，各帶 3 條 `faq_jsonld`、至少 1 個 `/tools/<slug>` 內連。沒有透過 admin UI 手動貼，效果等價（同一張表，同一組欄位）。
+  - select／toggle 的 ToolRenderer 互動測試依規則寫在**母版** `seo-tool-site-starter`（另開 fork agent 處理，commit hash 見下次更新或直接查母版 `git log`），完成後要 `git fetch upstream` + cherry-pick 回這個 repo。
 
 ## 已知坑
 

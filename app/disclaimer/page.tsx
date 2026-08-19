@@ -21,9 +21,18 @@ export default function DisclaimerPage() {
         <article className="prose">
           <h2>{t('disclaimer.referenceOnlyHeading')}</h2>
           <p>{t('disclaimer.referenceOnlyBody', { siteName: site.name })}</p>
+          <p>
+            Nothing on {site.name} is financial, tax, or legal advice. The calculators produce simplified
+            estimates for general informational purposes only — always confirm numbers with a qualified
+            accountant, tax preparer, or attorney, and check your own contract and local law before relying
+            on any result.
+          </p>
 
           <h2>{t('disclaimer.affiliateHeading')}</h2>
-          <p>{'{{AFFILIATE_DISCLOSURE}}'}</p>
+          <p>
+            {site.name} does not currently use affiliate links. If that changes, this section will be updated
+            to disclose it.
+          </p>
 
           <p>
             {t('disclaimer.contactPrefix')}

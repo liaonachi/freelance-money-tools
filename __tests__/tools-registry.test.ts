@@ -15,8 +15,9 @@ describe('tools registry', () => {
   })
 
   it('getTool 找得到已註冊的工具', () => {
-    expect(getTool('cash-vs-points')?.slug).toBe('cash-vs-points')
-    expect(getTool('points-value')?.slug).toBe('points-value')
+    expect(getTool('hourly-rate')?.slug).toBe('hourly-rate')
+    expect(getTool('late-fee')?.slug).toBe('late-fee')
+    expect(getTool('tax-set-aside')?.slug).toBe('tax-set-aside')
   })
 
   it('getTool 找不到不存在的 slug 時回傳 undefined', () => {

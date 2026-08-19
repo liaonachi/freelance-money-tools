@@ -1,13 +1,13 @@
-import cashVsPoints from './cash-vs-points.config'
-import pointsValue from './points-value.config'
-import tipCalculator from './tip-calculator.config'
+import hourlyRate from './hourly-rate.config'
+import lateFee from './late-fee.config'
+import taxSetAside from './tax-set-aside.config'
 // @new-tool:imports
 import { validateToolConfig, type ToolConfig } from '@/lib/tool-config'
 
 export const TOOLS: ToolConfig[] = [
-  cashVsPoints,
-  pointsValue,
-  tipCalculator,
+  hourlyRate,
+  lateFee,
+  taxSetAside,
   // @new-tool:registry
 ]
 
