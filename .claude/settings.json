@@ -1,0 +1,4 @@
+{
+  "model": "claude-sonnet-5",
+  "allowedTools": ["Read", "Write", "Edit", "Bash", "mcp__github__*", "mcp__supabase__*", "mcp__vercel__*"]
+}
