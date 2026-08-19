@@ -22,8 +22,8 @@
 ## 待辦（下一步）
 
 - **Day 1–2 第 4 步完成（2026-08-19）**：`specs/tools.md` 寫定三個工具的公式、來源、faq 草案（hourly-rate／late-fee／tax-set-aside）。Day 3 `npm run new:tool` 直接照抄這份 spec 的 compute 邏輯，faq 草案定稿後填進 config。
-- **Day 1–2 第 3 步（Supabase）被卡住，尚未開始**：Nadia 已經把 `liaonachi+seodemo` 帳號的 PAT 填進這個 repo 的 `.mcp.json`（帳號層級，沒鎖 project-ref），但這個 session 讀不到這個專案層級的 MCP server——`ToolSearch` 只找得到既有的 `claude.ai Supabase` connector（帳號是另一個 `liaonachi's Org`，底下是 `auto-publisher-dev`／`finhub-dev`，不是 seodemo 這個新帳號），用錯帳號會把 `seo-demo` 專案建到錯的地方，所以沒有動手建。**下一個 session 開始前先確認 Code CLI 已重開**，重開後應該能看到 `mcp__supabase__*` 系列工具（server 名稱是 `supabase`，見 `.mcp.json`），確認過帳號（`list_organizations`／`list_projects` 應該是空的或全新帳號，不該看到 auto-publisher-dev/finhub-dev）才建 `seo-demo` 專案。
-- Day 3 之後（Build／Review／Handover）：全部未開始，等 Supabase 專案建好、`.env.local` 填齊才能開始寫 `tools/*.config.ts` 跟文章（admin 要接 DB 才能發文章）。
+- **Day 1–2 第 3 步（Supabase）完成（2026-08-19）**：重開 Code CLI 後 `mcp__supabase__*` 系列工具可見，帳號確認是 `liaonachi+seodemo@gmail.com's Org`（乾淨帳號，無 auto-publisher-dev/finhub-dev），建了專案 `seo-demo`（region `ap-northeast-1`，project ref `zogebhjbueuwqgebbzxc`，免費方案 $0/月）。`.env.local` 已填齊（URL／anon key／service role key／DB URL／`REVALIDATE_SECRET`／`ADMIN_PASSWORD`／`ADMIN_SESSION_SECRET`，皆亂數產生，未印在任何對話紀錄）。`.mcp.json` 補回 `--project-ref=zogebhjbueuwqgebbzxc`。`supabase/schema.sql`（含 `<VERCEL_DOMAIN>`→`freelance-money-tools.vercel.app`、`<REVALIDATE_SECRET>` 代入實際值）已套用到遠端 DB——**注意：套用時把佔位符換成實際值後直接送進 DB，`supabase/schema.sql` 這個被 commit 的檔案本身維持佔位符原樣**（避免把 REVALIDATE_SECRET 明碼寫進 public repo；下次要重套時用同樣的替換手法，不要直接改這個檔案）。`blog_posts` 表、`blog_posts_updated_at`／`blog_posts_revalidate_trigger` 兩個 trigger 都已確認存在且 enabled。
+- Day 3 之後（Build／Review／Handover）：全部未開始，`.env.local` 已就緒，可以開始寫 `tools/*.config.ts` 跟文章（admin 可接 DB 發文章）。下一步是 Day 3 `npm run new:tool` 依 `specs/tools.md` 產三個工具。
 
 ## 已知坑
 
@@ -31,3 +31,6 @@
 - 這個目錄同時有 `origin`（這個 repo）跟 `upstream`（母版）兩個 remote，`gh run list`／`gh repo view` 沒先 `gh repo set-default liaonachi/freelance-money-tools` 會抓到母版，查 CI 狀態會查錯 repo。
 - `git cherry-pick` 母版更新時，`CLAUDE.md`／`docs/*.md` 這類兩邊都會各自客製的檔案幾乎必衝突，要手動合併，不能預期乾淨套用；`site.config.ts`／`specs/`／README 這種單純被覆寫的檔案沒事。
 - **專案層級 `.mcp.json` 改完不會馬上生效**：Code CLI 這個 session 是在 `.mcp.json` 填好 PAT 之前就啟動的，即使檔案已經存在且內容正確，session 內 `ToolSearch` 還是只看得到啟動當下就有的 connector（`claude.ai Supabase`），看不到新加的 `supabase` server。改 `.mcp.json`（新增/修改 server）之後一定要重開 Code CLI 才會載入；不要因為看到「有 Supabase MCP 工具」就假設是對的那一個——先看工具名稱前綴（專案層級的會是 `mcp__supabase__*`，不是 `mcp__claude_ai_Supabase__*`）跟 `list_organizations`/`list_projects` 回傳內容，確認帳號對了再動手，尤其是「建立」類操作（`create_project`）沒有 undo。
+- **檢查 `.mcp.json` 內容絕對不要用會印出整段 JSON 的指令**（`cat`、沒過濾的 `sed`…）：BSD sed（macOS 內建）用 `\{n,\}` 區間量詞遮罩長字串曾經整段失效（沒報錯、也沒遮住），PAT 因此完整明碼進了對話紀錄一次，只能事後提醒撤銷重發，補救不了已經寫進 transcript 的部分。之後檢查改用 `jq` 配合明確的 key path（例如 `jq '.mcpServers.supabase.args | map(if startswith("--access-token=") then "[REDACTED]" else . end)'`），或乾脆整段不印、只印「有沒有值／長度」。
+- **需要把 secret 直接寫進要 commit 的檔案（例如這次的 `supabase/schema.sql` 佔位符代入）時，不要真的改動被追蹤的檔案**：改用 script 在本機把佔位符換成實際值、直接送進資料庫（這次用 `npx supabase db query -f <file> --db-url "$SUPABASE_DB_URL"`，DB_URL／secret 全部從 `.env.local` 讀，不經過我自己的輸出）；被 git 追蹤的原始檔維持佔位符樣子，這樣才能公開 repo 也不洩漏，且母版模板可以重複給下一個客戶用。
+- **`npx supabase db query -f <file>`（單次呼叫）不支援一個檔案裡塞多條 SQL 敘述**：會報 `cannot insert multiple commands into a prepared statement`；要嘛拆成一條一條分開呼叫，要嘛換工具。手寫 SQL statement splitter 時，`--` 單行註解一定要在判斷字串邊界（`'`）之前先處理掉，不然註解裡剛好出現的單引號（例如 `-- 'draft' | 'published'` 這種 schema 欄位註解）會讓 parser 誤判還在字串裡，吞掉後面一大段真正的 SQL（這次真實發生：`CREATE TABLE`／`CREATE FUNCTION`／`ALTER TABLE` 都因此消失，第一時間看起來像是「敘述數量對不上」，其實是被吞掉丟棄）。
