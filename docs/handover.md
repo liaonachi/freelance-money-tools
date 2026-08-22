@@ -34,8 +34,6 @@ Non-secret site settings (name, domain, language, currency, colour, nav, GA4 ID)
 
 ## 3. Day-to-day: publishing articles
 
-⚠️ **Known issue at handover**: logging in with the `ADMIN_PASSWORD` currently in your local `.env.local` failed against the live site during QA (2026-08-22) — it looks like it doesn't match what's actually set in Vercel. If your first login attempt fails, go to Vercel → Project Settings → Environment Variables, reset `ADMIN_PASSWORD` to a new value, redeploy, and update your local `.env.local` to match. See `docs/delivery-checklist.md` QA checklist for details.
-
 1. Go to `https://freelance-money-tools.vercel.app/admin/login`, enter `ADMIN_PASSWORD`.
 2. **Posts → New**: title, slug (auto-filled, editable), excerpt (used as meta description), content in Markdown, and an optional FAQ section (add/remove question + answer rows) — filled-in FAQs render as `FAQPage` structured data on the article page.
 3. **Save draft** or **Save & publish**. Published pages regenerate within seconds (no redeploy needed) via the Supabase → `/api/revalidate` webhook; the sitemap updates too.
