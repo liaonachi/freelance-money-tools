@@ -55,4 +55,4 @@ commit + push 到 main（一如既往由 Code CLI 執行，Cowork 不對本機 r
 ### commit
 
 - `npx tsc --noEmit` 0 errors／`npm test` 108 passed／`npm run build` 成功
-- commit hash：見對話中 push 後的訊息（`git log --oneline -1`）
+- commit hash：`c38bed0`（`fix(admin): 找到「登入失敗」真正根因（測試 script 選錯按鈕），補第 5 張截圖`）
