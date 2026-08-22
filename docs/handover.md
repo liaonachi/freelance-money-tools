@@ -1,20 +1,20 @@
 # Handover — Freelance Money Tools
 
-> Delivered by Nadia · {{DELIVERY_DATE}} · Package: {{PACKAGE}} (Tool Page / Tool Site / Site + Growth Ops)
+> Delivered by Nadia · 2026-08-22 · Package: Tool Site (Tool Page / Tool Site / Site + Growth Ops)
 > This document is generated from the starter template. Sections marked ⚙️ are filled in per project; everything else applies to every site built on this stack.
 
 ## 1. What you received
 
 | Item | Where |
 |---|---|
-| Source code (you own it) | GitHub repo `{{REPO_URL}}` — main branch is production |
+| Source code (you own it) | GitHub repo `https://github.com/liaonachi/freelance-money-tools` — main branch is production |
 | Live site | `https://freelance-money-tools.vercel.app` |
-| Hosting | Vercel project `{{VERCEL_PROJECT}}` (your account) |
-| Database | Supabase project `{{SUPABASE_PROJECT}}` (your account) — one table: `blog_posts` |
-| Analytics | GA4 property `{{GA4_ID}}` · Google Search Console property `{{GSC_PROPERTY}}` |
+| Hosting | Vercel project `freelance-money-tools` (your account) |
+| Database | Supabase project `seo-demo` (your account) — one table: `blog_posts` |
+| Analytics | GA4 property: not yet configured (`site.config.ts` → `ga4Id` is empty) · Google Search Console: verification meta tag is live, but the property itself still needs to be created — see the note under §5 |
 | Admin panel | `https://freelance-money-tools.vercel.app/admin` — password login (see §3) |
-| Tools built ⚙️ | {{TOOL_LIST}} |
-| Articles published ⚙️ | {{ARTICLE_COUNT}} |
+| Tools built ⚙️ | Freelance Hourly Rate Calculator (`/tools/hourly-rate`), Invoice Late Fee Calculator (`/tools/late-fee`), Self-Employment Tax Set-Aside Calculator (`/tools/tax-set-aside`) |
+| Articles published ⚙️ | 3 — "How to Set Your Freelance Hourly Rate", "Late Payment Fees for Freelancers", "How Much Should Freelancers Set Aside for Taxes" |
 
 ## 2. Accounts & secrets (keep private)
 
@@ -33,6 +33,8 @@ All secrets live in **Vercel → Project → Settings → Environment Variables*
 Non-secret site settings (name, domain, language, currency, colour, nav, GA4 ID) live in **`site.config.ts`** in the repo. Edit → commit → Vercel redeploys automatically.
 
 ## 3. Day-to-day: publishing articles
+
+⚠️ **Known issue at handover**: logging in with the `ADMIN_PASSWORD` currently in your local `.env.local` failed against the live site during QA (2026-08-22) — it looks like it doesn't match what's actually set in Vercel. If your first login attempt fails, go to Vercel → Project Settings → Environment Variables, reset `ADMIN_PASSWORD` to a new value, redeploy, and update your local `.env.local` to match. See `docs/delivery-checklist.md` QA checklist for details.
 
 1. Go to `https://freelance-money-tools.vercel.app/admin/login`, enter `ADMIN_PASSWORD`.
 2. **Posts → New**: title, slug (auto-filled, editable), excerpt (used as meta description), content in Markdown, and an optional FAQ section (add/remove question + answer rows) — filled-in FAQs render as `FAQPage` structured data on the article page.
@@ -61,23 +63,25 @@ Tools are code, not database rows (that is what keeps them fast and indexable). 
 
 ⚙️ **GSC dashboard (Site + Growth Ops package, on the roadmap):** `https://freelance-money-tools.vercel.app/admin/seo` exists as a page, but as of this template version it's a placeholder — it doesn't pull live Search Console data yet. Don't promise this as delivered functionality until it's actually wired up; check with Nadia first.
 
+⚙️ **GSC property setup — still needs a manual step:** the site verification meta tag (`google-site-verification`) is live in production, so verification itself is a one-click step once you're logged into the right Google account. But creating the actual Search Console property (as a URL-prefix property for `https://freelance-money-tools.vercel.app/`, not a domain property) requires being logged into a Google account in a real browser — that can't be scripted from here. Go to [Google Search Console](https://search.google.com/search-console), add the property, click verify (it should pass immediately since the meta tag is already deployed), then submit `https://freelance-money-tools.vercel.app/sitemap.xml`.
+
 ## 6. Maintenance you should expect
 
-- **Data freshness**: any tool that embeds real-world numbers (rates, prices, thresholds) needs a review cadence. ⚙️ For this site: {{FRESHNESS_NOTES}}
+- **Data freshness**: any tool that embeds real-world numbers (rates, prices, thresholds) needs a review cadence. ⚙️ For this site: the tax set-aside calculator's default self-employment tax rate and bracket assumptions are US federal figures for the current tax year (see `specs/tools.md` for sourcing) — review and update once a year when the IRS publishes new figures, typically each January.
 - **Dependencies**: Next.js / Supabase libraries get security updates. Run `npm outdated` quarterly or include it in a maintenance plan.
 - **Backups**: Supabase free tier keeps daily backups for 7 days; export `blog_posts` (Table editor → Export CSV) before major edits if you want your own copy.
 - **Domain / SSL / hosting**: managed by Vercel; renew the domain with your registrar.
 
 ## 7. Support
 
-- **30-day bug-fix window** from `{{DELIVERY_DATE}}`: anything that worked at handover and stops working is fixed at no charge.
-- **Monthly maintenance plan** (optional): data refresh, GSC/GA4 monthly report, dependency updates, one article or tool tweak per month. ⚙️ {{MAINTENANCE_TERMS}}
+- **30-day bug-fix window** from `2026-08-22`: anything that worked at handover and stops working is fixed at no charge.
+- **Monthly maintenance plan** (optional): data refresh, GSC/GA4 monthly report, dependency updates, one article or tool tweak per month. ⚙️ Not applicable here — this is Nadia's own portfolio/demo site (client = Nadia herself), not a paid client engagement, so there's no separate maintenance retainer to track. For a real client this line would state the agreed monthly rate and scope.
 - Contact: nadiadevstudio@gmail.com
 
 ## 8. Local development (for your developer, if any)
 
 ```bash
-git clone {{REPO_URL}} && cd {{REPO_DIR}}
+git clone https://github.com/liaonachi/freelance-money-tools.git && cd freelance-money-tools
 cp .env.local.example .env.local   # fill from Vercel env
 npm install
 npm run dev                          # http://localhost:3000
