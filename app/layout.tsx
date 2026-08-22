@@ -30,6 +30,9 @@ export const metadata: Metadata = {
     title: site.name,
     description: site.description,
   },
+  verification: {
+    google: "9qdvcpjeruudXWZabpWvW03D6xgZPCRD6mYWnE23YeM",
+  },
 };
 
 export default function RootLayout({
@@ -41,29 +44,27 @@ export default function RootLayout({
 
   return (
     <html lang={site.locale} className="h-full antialiased" style={htmlStyle}>
-      <head>
-        {site.ga4Id && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${site.ga4Id}`}
-              strategy="afterInteractive"
-            />
-            <Script id="ga4-init" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${site.ga4Id}');
-              `}
-            </Script>
-          </>
-        )}
-      </head>
       <body className="min-h-full flex flex-col">
         <Header />
         <div className="flex-1">{children}</div>
         <Footer />
       </body>
+      {site.ga4Id && (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${site.ga4Id}`}
+            strategy="afterInteractive"
+          />
+          <Script id="ga4-init" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${site.ga4Id}');
+            `}
+          </Script>
+        </>
+      )}
     </html>
   );
 }

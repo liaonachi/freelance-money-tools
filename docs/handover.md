@@ -72,7 +72,7 @@ Tools are code, not database rows (that is what keeps them fast and indexable). 
 
 - **30-day bug-fix window** from `{{DELIVERY_DATE}}`: anything that worked at handover and stops working is fixed at no charge.
 - **Monthly maintenance plan** (optional): data refresh, GSC/GA4 monthly report, dependency updates, one article or tool tweak per month. ⚙️ {{MAINTENANCE_TERMS}}
-- Contact: {{CONTACT}}
+- Contact: nadiadevstudio@gmail.com
 
 ## 8. Local development (for your developer, if any)
 

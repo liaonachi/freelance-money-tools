@@ -29,7 +29,10 @@ export default function AboutPage() {
           </p>
 
           <h2>{t('about.contactHeading')}</h2>
-          <p>{'{{CONTACT}}'}</p>
+          <p>
+            Questions or want a similar site built? Email{' '}
+            <a href="mailto:nadiadevstudio@gmail.com">nadiadevstudio@gmail.com</a>
+          </p>
         </article>
       </div>
     </main>
