@@ -1,6 +1,6 @@
 -- SEO Tool Site Starter — Database Schema
 -- Source of truth: 所有 DB 改動都改這個檔案（冪等：IF NOT EXISTS / ON CONFLICT DO NOTHING）
--- Apply: npm run db:apply（= npx supabase db push）
+-- Apply: npm run db:apply（執行 scripts/db-apply.ts，直接連線套用整份檔案，不是 Supabase CLI migration 模式）
 
 -- ============================================
 -- blog_posts

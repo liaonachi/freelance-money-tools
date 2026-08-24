@@ -9,7 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "db:apply": "npx supabase db push",
+    "db:apply": "node --env-file-if-exists=.env.local scripts/db-apply.ts",
     "new:site": "node scripts/new-site.ts",
     "new:tool": "node scripts/new-tool.ts",
     "seed:articles": "node scripts/seed-articles.ts"
@@ -33,11 +33,13 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/sanitize-html": "^2.16.1",
+    "@types/pg": "^8.23.1",
     "@vitejs/plugin-react": "^6.0.5",
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
     "jsdom": "^30.0.1",
+    "pg": "^8.23.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.10"

@@ -108,6 +108,7 @@ npm run new:tool          # 互動式產 tools/<slug>.config.ts + 測試骨架 +
 
 ## 決策規則（遇到就照做，不要重新判斷）
 
+- **Secret 處理鐵則**（全域規則，詳見 `~/.claude/CLAUDE.md`／`claude-dotfiles` repo 版控同步，這裡不重複全文）：`.env*`、`.mcp.json`、任何含 key/token/secret 欄位的 API 回應，一律禁止用 `cat`/直接印整份內容確認，先過濾/遮蔽再印（例如只印長度/前綴）。2026-08-23 起因：`u-trust-ethan` 專案同一天連續兩次把完整 secret 印到對話輸出，才把這條從抽象原則改寫成具體禁令並收進全域檔案。這個專案的 `.mcp.json` 這次也牽涉在內(PAT 曾在對話中被完整印出),建議 access token 有空時到 Supabase dashboard 重新產生,換掉後這個專案跟 `u-trust-ethan` 的 `.mcp.json` 都要一起更新。
 - **Schema 變更** → 只改 `supabase/schema.sql`（冪等：IF NOT EXISTS / ON CONFLICT DO NOTHING）；新欄位一律 nullable。絕不手動下 ALTER。
 - **外部 API 失敗（GSC、Supabase）** → 記 log、回空資料、繼續跑；build 期間絕不因外部服務失敗而 crash。
 - **不確定需求** → 停下來問，附 A/B 選項。
@@ -146,6 +147,7 @@ git fetch upstream → 看 upstream 的 commit log 決定要不要 cherry-pick
 9. **本機沒設 SSH key 給 GitHub**：`git@github.com` host key verification failed；clone／remote 一律用 https（跟 `gh auth status` 走的協定一致）。
 10. **同一個 repo 目錄下同時有 `origin`（這個 repo）跟 `upstream`（母版）兩個 remote 時，`gh` 系列指令會抓錯 repo**：`gh run list`／`gh repo view` 預設可能解析成 `upstream` 那個母版 repo。加完 `upstream` remote 後立刻跑 `gh repo set-default liaonachi/freelance-money-tools` 釘死，之後 `gh` 指令才會查對地方（母版側這個坑記在它自己的 CLAUDE.md，這裡只記本站遇到的結果）。
 11. **`scripts/new-site.ts` 非互動環境（stdin 不是 TTY）或帶了任何 flag 時會自動跳過 `rl.question`**：邏輯在 `scripts/lib/should-skip-prompt.ts`（母版 cherry-pick 進來的），不需要 `--yes` 也不會卡住；沒給的欄位一律用預設值。
+12. **純 `node` 執行 `.ts` 腳本不會自動讀 `.env.local`**：那是 Next.js 自己在 `next dev`/`next build` 時才有的行為，`node scripts/xxx.ts` 這種直接執行不會繼承。需要讀 env 的腳本（例如 `scripts/db-apply.ts` 讀 `SUPABASE_DB_URL`），npm script 要帶 `node --env-file-if-exists=.env.local scripts/xxx.ts`（Node 20.6+ 內建旗標；用 `-if-exists` 版本，檔案不存在時不會噴錯，CI／新 clone 沒有 `.env.local` 時才不會炸掉）。
 
 ## 慣例
 
