@@ -4,7 +4,7 @@
 
 ## 專案目的
 
-**Freelance Money Tools** — 給 freelancer 用的免費計算機小站（hourly rate、late fee、tax set-aside 三個工具 + 對應部落格文章）。這是產品化服務「SEO Tool Website」母版 [seo-tool-site-starter](https://github.com/liaonachi/seo-tool-site-starter)（private，本機路徑 `~/Documents/Claude/Projects/seo-tool-site-starter`）第一次真實交付案，同時是 Nadia 的 Upwork／Contra 作品集，會實際部署上線。
+**Freelance Money Tools** — 給 freelancer 用的免費計算機小站（hourly rate、late fee、tax set-aside 三個工具 + 對應部落格文章）。這是產品化服務「SEO Tool Website」母版 [seo-tool-site-starter](https://github.com/liaonachi/seo-tool-site-starter)（private，本機路徑 `~/dev/projects/seo-tool-site-starter`）第一次真實交付案，同時是 Nadia 的 Upwork／Contra 作品集，會實際部署上線。
 
 **這個 repo 是一個真正的網站**（跟母版不同，母版本身不部署）：接自己的 Supabase 專案（`seo-demo`）、部署在自己的 Vercel 專案（`freelance-money-tools`）。技術棧、目錄結構、開發慣例全部繼承母版，此檔只做必要調整；細節與站台特有資訊見 `specs/blueprint.md`、`specs/demo-site.md`。
 
@@ -161,7 +161,7 @@ git fetch upstream → 看 upstream 的 commit log 決定要不要 cherry-pick
 ## Cowork 給 Code CLI 的觸發句格式
 
 ```
-cd ~/Documents/Claude/Projects/freelance-money-tools，不要開 worktree。
+cd ~/dev/projects/freelance-money-tools，不要開 worktree。
 讀 specs/demo-site.md（或指定 slug）直接動工（或：先寫 plan 不要動工）。
 完成後依序跑 npx tsc --noEmit、npm test、npm run build，都無錯誤再 commit + push。
 在對應 spec 末尾追加 ## Result（改動檔案清單 + commit hash）。
