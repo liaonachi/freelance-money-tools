@@ -1,5 +1,12 @@
 # SESSION-HANDOFF — Freelance Money Tools
 
+<!-- hub -->
+狀態：等待
+下一步：建 GSC property 並提交 sitemap（需本人登入 Google 操作）
+等誰：待確認
+目前 spec：
+<!-- /hub -->
+
 > 給下一個接手對話看的現況快照。詳細步驟見 `specs/demo-site.md`。
 
 ## 目前進度
