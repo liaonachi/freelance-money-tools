@@ -170,6 +170,8 @@ cd ~/dev/projects/freelance-money-tools，不要開 worktree。
 
 git commit / push 一律交給 Code CLI；Cowork 只寫檔案，不對本機 repo 下 git 指令。
 
+- **純文件 commit 不觸發 Vercel 部署**（2026-11-03，`scripts/vercel-ignore-build.sh`＋`vercel.json` 的 `ignoreCommand`，清單：根目錄 `*.md`、`specs/**`、`docs/**`、`.claude/**`）：被跳過的部署在 Vercel 顯示 Canceled，不是失敗；要強制重部署請用 Vercel 後台 Redeploy（空 commit 或內容相同的 revert 會被跳過）。首次真實純文件 push 後須確認為 Canceled、程式 commit 為 Ready。rollback：移除 `vercel.json` 的 `ignoreCommand` 一行。
+
 ## 協作方式
 
 - 使用者偏好**繁體中文 zh-TW**
