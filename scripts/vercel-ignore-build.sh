@@ -8,6 +8,9 @@
 # 原則：只有「上次成功部署（VERCEL_GIT_PREVIOUS_SHA）到 HEAD 的所有變更檔」
 # 全部落在 DOC_PATHS 才跳過；任何不確定（空 SHA、基準不存在、git 錯誤）一律 build。
 #
+# 例外：BASE == HEAD（Redeploy 同一個 commit，例如改了環境變數）一律 build——否則 diff 為空會被誤判成
+# 「只有文件」而取消，新 env 永遠生效不了。
+#
 # DOC_PATHS 一律以 repo 根目錄為基準的 glob（git pathspec glob magic）：
 #   '*.md'      只匹配 repo 根目錄的 .md，不跨 /（content/post.md 不會被排除）
 #   'specs/**'  整個目錄
@@ -36,6 +39,9 @@ BASE="${VERCEL_GIT_PREVIOUS_SHA:-}"
 # 基準 commit 不存在於本地（例如淺 clone）→ build
 git cat-file -e "${BASE}^{commit}" 2>/dev/null || build "previous sha ${BASE} not found locally"
 HEAD_SHA="$(git rev-parse --verify HEAD 2>/dev/null)" || build "cannot resolve HEAD"
+
+# 同一 commit 再部署（Redeploy）一定是人為意圖（例如改 env）→ build，不可因 diff 為空而跳過
+[ "$BASE" != "$HEAD_SHA" ] || build "redeploy of same commit"
 
 SPEC=(.)
 for p in "${DOC_PATHS[@]}"; do
